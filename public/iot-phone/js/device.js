@@ -41,7 +41,7 @@
 		var shiftedFCL = shifted_filter[channel] + ((sample-last_sample[channel])*256);
 		shifted_filter[channel] = shiftedFCL - (shiftedFCL/256);
 		last_sample[channel] = sample;
-		return ((shifted_filter[channel]+128)/256);    
+		return ((shifted_filter[channel]+128)/256);
 	}
 
 	window.ondevicemotion = function(event) {
@@ -80,8 +80,8 @@
 				console.log(response);
 				window.iot_host = response.org + ".messaging.internetofthings.ibmcloud.com";
 				window.iot_port = 1883;
-				window.deviceId = prompt("Enter a unique ID for your device containing only letters and numbers:");
-				window.password = prompt("Enter an 8-character password");
+				window.deviceId = prompt("Enter a unique Device ID for your phone containing only letters and numbers:");
+				window.password = prompt("Enter a new authentication token for your device (a least 8 characters):");
 				window.iot_clientid = "d:"+response.org+":iot-phone:"+window.deviceId;
 				window.client = new Paho.MQTT.Client(window.iot_host, window.iot_port, window.iot_clientid);
 				registerDevice();
