@@ -1,3 +1,5 @@
-applications:
+---
+- memory: 64M
+  disk_quota: 256M
+  buildpack: nodejs_buildpack
   command: node app.js
-  memory: 64M
