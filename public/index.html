@@ -14,14 +14,15 @@
 				<h3>Step 1: Connect your Smartphone</h3>
 				<p>With your smartphone, open this special page:
 				<ol>
-					<li>URL 1: [ <span style="margin-left: 20px; letter-spacing: 1px; font-weight: bold;" id="mobileappurl"></span> ]</li>
-					<li>URL 2: <a id="mobileapphref">/iot-phone</a> </li>
-					<li>URL 3: <a href=mobileappurl><span id="mobileappurl"></span></a> </li>
+					<li>URL: <span style="letter-spacing: 1px; font-weight: bold;" id="mobileappurl"></span></li>
 					<li id="qrcode">QR: </li>
 					<li>Mailto: <br/>
-						<input type="email"
+						<input type="email" id="email-input"
 						style="background: #333; outline: none; border: none; padding: 10px 15px; text-align: left; font-size: 13px;"
 						placeholder="enter your email" />
+
+						<a href="#" id="send-button"
+						   style="background: #333; padding: 9px 15px; text-decoration: none; text-transform: uppercase; margin-top: 10px; display: none;">Send</a>
 					</li>
 				</ol>
 					</p>
@@ -52,9 +53,8 @@
 	</div>
 	<script type="text/javascript" src="js/jquery.min.js"></script>
 	<script type="text/javascript">
-		$("#mobileappurl").html("http://" + window.location.hostname + "/iot-phone");
-
-		$("#mobileapphref").attr("href", "http://" + window.location.hostname + "/iot-phone");
+		var urlString = "http://" + window.location.hostname + "/iot-phone";
+		$("#mobileappurl").append("<a href='" + urlString + "'>" + urlString + "</a>");
 
 		$.ajax({
 			url: "/iotServiceLink",
@@ -84,6 +84,17 @@
 				console.error("Could not fetch organization information.");
 
 				$("li#qrcode").append('N/A');
+			}
+		});
+
+		$("input#email-input").keyup(function() {
+			var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+  			
+			if (regex.test($(this).val())) {
+				$("a#send-button").css("display", "table");
+				$("a#send-button").attr("href", "mailto:" + $(this).val() + "?Subject=IBM%20Watson%20IoT%20Platform%20-%20Device%20Simulator%20URL&Body=Here%27s%20the%20link - " + urlString);
+			} else {
+				$("a#send-button").css("display", "none");
 			}
 		});
 	</script>
