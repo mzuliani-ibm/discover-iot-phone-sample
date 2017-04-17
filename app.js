@@ -1,18 +1,25 @@
 'use strict';
 
-var express = require('express');
-var bodyParser = require('body-parser');
-var https = require('https');
-var cfenv = require('cfenv');
+// Library Imports
+var express = require('express')
+	, bodyParser = require('body-parser')
+	, https = require('https')
+	, cfenv = require('cfenv');
+
+// Define ExpresJS app
 var app = express();
+
 app.use(express.static(__dirname + '/public'));
-app.use(bodyParser.json()); // for parsing application/json
+app.use(bodyParser.json()); // for parsing JSONs from http requests
+
 var appEnv = cfenv.getAppEnv();
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
 var config = null;
 var credentials = null;
+
+// process.env gives us the environment variables
 if (process.env.VCAP_SERVICES) {
 	config = JSON.parse(process.env.VCAP_SERVICES);
 
@@ -32,6 +39,7 @@ var basicConfig = {
 	apiToken: credentials.apiToken
 };
 
+// IoT Platform authentication info
 var options = {
 	host: 'internetofthings.ibmcloud.com',
 	port: 443,
@@ -41,7 +49,9 @@ var options = {
 	auth: basicConfig.apiKey + ':' + basicConfig.apiToken
 };
 
+// When user makes a GET request to '/credentials'
 app.get('/credentials', function(req, res) {
+	// Return this JSON to the user
 	res.json(basicConfig);
 });
 
@@ -73,8 +83,10 @@ app.get('/iotServiceLink', function(req, res) {
 	org_req.end();
 });
 
+// When user makes a POST request to '/registerDevice'
 app.post('/registerDevice', function(req, res) {
 	console.log(req.body);
+
 	var deviceId = null, typeId = "iot-phone", password = null;
 	if (req.body.deviceId) { deviceId = req.body.deviceId; }
 	if (req.body.typeId) { typeId = req.body.typeId; }
@@ -89,12 +101,13 @@ app.post('/registerDevice', function(req, res) {
 		auth: basicConfig.apiKey + ':' + basicConfig.apiToken,
 		method: 'POST',
 		path: 'api/v0002/device/types'
-	}
+	};
 
 	var deviceTypeDetails = {
 		id: typeId
-	}
+	};
 	console.log(deviceTypeDetails);
+
 	var type_req = https.request(options, function(type_res) {
 		var str = '';
 		type_res.on('data', function(chunk) {
@@ -134,10 +147,12 @@ app.post('/registerDevice', function(req, res) {
 			dev_req.end();
 		});
 	}).on('error', function(e) { console.log("ERROR", e); });
+
 	type_req.write(JSON.stringify(deviceTypeDetails));
 	type_req.end();
 });
 
+// Start the server on the port specified in the app environment
 app.listen(appEnv.port, function() {
 	console.log("server starting on " + appEnv.url);
 });
