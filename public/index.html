@@ -18,7 +18,7 @@
 					<li id="qrcode">QR: </li>
 					<li>Mailto: <br/>
 						<input type="email" id="email-input"
-						style="background: #333; outline: none; border: none; padding: 10px 15px; text-align: left; font-size: 13px;"
+						style="background: #333; outline: none; border: none; padding: 10px 15px; text-align: left; font-size: 13px; margin-top: 10px;"
 						placeholder="enter your email" />
 
 						<a href="#" id="send-button"
@@ -78,7 +78,7 @@
 			success: function(response) {
 				console.log("RESPONSE", response.img);
 
-				$("li#qrcode").append('<br/><img id="qrcode-img" src="' + response.img + '" />');
+				$("li#qrcode").append('<br/><img id="qrcode-img" style="margin: 10px 0;" src="' + response.img + '" />');
 			},
 			error: function(xhr, status, error) {
 				console.error("Could not fetch organization information.");
