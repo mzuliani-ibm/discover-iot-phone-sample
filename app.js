@@ -4,7 +4,8 @@
 var express = require('express')
 	, bodyParser = require('body-parser')
 	, https = require('https')
-	, cfenv = require('cfenv');
+	, cfenv = require('cfenv')
+	, fs = require('fs');
 
 // Define ExpresJS app
 var app = express();
@@ -19,9 +20,22 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 var config = null;
 var credentials = null;
 
+var VCAP_SERVICES;
+
+try {
+	var VCAP_SERVICES = require(__dirname + '/VCAP_SERVICES.json');
+} catch (error) {
+	VCAP_SERVICES = process.env.VCAP_SERVICES;
+}
+
 // process.env gives us the environment variables
-if (process.env.VCAP_SERVICES) {
-	config = JSON.parse(process.env.VCAP_SERVICES);
+if (VCAP_SERVICES) {
+	if (process.env.VCAP_SERVICES) {
+		config = JSON.parse(VCAP_SERVICES);
+	} else {
+		config = VCAP_SERVICES;
+	}
+	
 
 	var iotService = config['iotf-service'];
 	for (var index in iotService) {
