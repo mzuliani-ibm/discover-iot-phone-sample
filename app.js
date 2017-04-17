@@ -5,7 +5,9 @@ var express = require('express')
 	, bodyParser = require('body-parser')
 	, https = require('https')
 	, cfenv = require('cfenv')
-	, fs = require('fs');
+	, fs = require('fs')
+	, qr = require('qr-image')
+	, url = require('url');
 
 // Define ExpresJS app
 var app = express();
@@ -79,7 +81,8 @@ app.get('/iotServiceLink', function(req, res) {
 		auth: basicConfig.apiKey + ':' + basicConfig.apiToken,
 		method: 'GET',
 		path: 'api/v0002/'
-	}
+	};
+
 	var org_req = https.request(options, function(org_res) {
 		var str = '';
 		org_res.on('data', function(chunk) {
@@ -164,6 +167,20 @@ app.post('/registerDevice', function(req, res) {
 
 	type_req.write(JSON.stringify(deviceTypeDetails));
 	type_req.end();
+});
+
+app.post('/qrcode', function(req, res) {
+	var text = url.parse(req.body.url).href;
+	
+    try {
+        var imgString = qr.imageSync(text);
+		var b64encoded = imgString.toString('base64');
+ 		var datajpg = "data:image/png;base64," + b64encoded;
+		
+		res.status(200).json({img: datajpg});
+    } catch (e) {
+        res.status(400);
+    }
 });
 
 // Start the server on the port specified in the app environment

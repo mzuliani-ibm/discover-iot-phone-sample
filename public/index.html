@@ -17,8 +17,12 @@
 					<li>URL 1: [ <span style="margin-left: 20px; letter-spacing: 1px; font-weight: bold;" id="mobileappurl"></span> ]</li>
 					<li>URL 2: <a id="mobileapphref">/iot-phone</a> </li>
 					<li>URL 3: <a href=mobileappurl><span id="mobileappurl"></span></a> </li>
-					<li>QR: </li>
-					<li>Mailto: </li>
+					<li id="qrcode">QR: </li>
+					<li>Mailto: <br/>
+						<input type="email"
+						style="background: #333; outline: none; border: none; padding: 10px 15px; text-align: left; font-size: 13px;"
+						placeholder="enter your email" />
+					</li>
 				</ol>
 					</p>
 				<p>QR code and short  </p>
@@ -49,7 +53,9 @@
 	<script type="text/javascript" src="js/jquery.min.js"></script>
 	<script type="text/javascript">
 		$("#mobileappurl").html("http://" + window.location.hostname + "/iot-phone");
+
 		$("#mobileapphref").attr("href", "http://" + window.location.hostname + "/iot-phone");
+
 		$.ajax({
 			url: "/iotServiceLink",
 			type: "GET",
@@ -60,6 +66,24 @@
 			},
 			error: function(xhr, status, error) {
 				console.error("Could not fetch organization information.");
+			}
+		});
+
+		$.ajax({
+			url: "/qrcode",
+			type: "POST",
+			contentType: "application/json; charset=utf-8",
+			dataType: "json",
+			data: JSON.stringify({url: "http://" + window.location.hostname + "/iot-phone"}),
+			success: function(response) {
+				console.log("RESPONSE", response.img);
+
+				$("li#qrcode").append('<br/><img id="qrcode-img" src="' + response.img + '" />');
+			},
+			error: function(xhr, status, error) {
+				console.error("Could not fetch organization information.");
+
+				$("li#qrcode").append('N/A');
 			}
 		});
 	</script>
