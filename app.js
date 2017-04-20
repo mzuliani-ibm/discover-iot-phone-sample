@@ -22,22 +22,8 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 var config = null;
 var credentials = null;
 
-var VCAP_SERVICES;
-
-try {
-	var VCAP_SERVICES = require(__dirname + '/VCAP_SERVICES.json');
-} catch (error) {
-	VCAP_SERVICES = process.env.VCAP_SERVICES;
-}
-
-// process.env gives us the environment variables
-if (VCAP_SERVICES) {
-	if (process.env.VCAP_SERVICES) {
-		config = JSON.parse(VCAP_SERVICES);
-	} else {
-		config = VCAP_SERVICES;
-	}
-	
+function configureCredentials(vcap) {
+	config = vcap;
 
 	var iotService = config['iotf-service'];
 	for (var index in iotService) {
@@ -45,8 +31,21 @@ if (VCAP_SERVICES) {
 			credentials = iotService[index].credentials;
 		}
 	}
-} else {
-	console.log("ERROR: IoT Service was not bound!");
+}
+
+try {
+	var VCAP_SERVICES = require(__dirname + '/VCAP_SERVICES.json');
+
+	configureCredentials(VCAP_SERVICES);
+} catch (error) {
+	console.log(error);
+	console.log("Fallback to Bluemix VCAP_SERVICES");
+
+	if (process.env.VCAP_SERVICES) {
+		configureCredentials(JSON.parse(process.env.VCAP_SERVICES));
+	} else {
+		console.log("ERROR: IoT Service was not bound!");
+	}
 }
 
 var basicConfig = {
