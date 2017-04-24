@@ -1,4 +1,4 @@
-# Watson IoT Platform Starter - Mobile web app
+# IBM Watson IoT Platform - Sample mobile web app
 
 Create a simple node.js app that uses your mobile phone to simulate an IoT device and sends live accelerometer data to Watson IoT Platform on Bluemix.
 If you don't want to do any devOps or coding, try a similar demo app here: (http://discover-iot.eu-gb.mybluemix.net/#/play)
