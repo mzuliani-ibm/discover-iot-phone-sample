@@ -78,12 +78,14 @@
 			dataType: "json",
 			success: function(response) {
 				console.log(response);
+				
 				window.iot_host = response.org + ".messaging.internetofthings.ibmcloud.com";
-				window.iot_port = 1883;
+				window.iot_port = 443;
 				window.deviceId = prompt("Enter a unique Device ID for your phone containing only letters and numbers:");
 				window.password = prompt("Enter a new authentication token for your device (a least 8 characters):");
 				window.iot_clientid = "d:"+response.org+":iot-phone:"+window.deviceId;
 				window.client = new Paho.MQTT.Client(window.iot_host, window.iot_port, window.iot_clientid);
+
 				registerDevice();
 			},
 			error: function(xhr, status, error) {
