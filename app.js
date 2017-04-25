@@ -26,11 +26,7 @@ function configureCredentials(vcap) {
 	config = vcap;
 
 	var iotService = config['iotf-service'];
-	for (var index in iotService) {
-		if (iotService[index].name === 'iotp-for-phone') {
-			credentials = iotService[index].credentials;
-		}
-	}
+	credentials = iotService[0].credentials;
 }
 
 try {
@@ -170,12 +166,12 @@ app.post('/registerDevice', function(req, res) {
 
 app.post('/qrcode', function(req, res) {
 	var text = url.parse(req.body.url).href;
-	
+
     try {
         var imgString = qr.imageSync(text);
 		var b64encoded = imgString.toString('base64');
  		var datajpg = "data:image/png;base64," + b64encoded;
-		
+
 		res.status(200).json({img: datajpg});
     } catch (e) {
         res.status(400);
