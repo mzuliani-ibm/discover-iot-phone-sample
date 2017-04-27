@@ -21,8 +21,8 @@ stages:
         type: deployer
         script: |-
             #!/bin/bash
+            cf push "${CF_APP}" --no-start
             cf create-service iotf-service iotf-service-free iotp-service-for-phone
-            cf bind-service my-iot-phone-app iotp-for-phone
             cf bind-service "${CF_APP}" iotp-service-for-phone
             cf start "${CF_APP}"
             # View logs
