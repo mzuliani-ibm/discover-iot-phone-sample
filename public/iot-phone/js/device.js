@@ -152,7 +152,8 @@
 			onSuccess: onConnectSuccess,
 			onFailure: onConnectFailure,
 			userName: "use-token-auth",
-			password: window.password
+			password: window.password,
+			useSSL: true
 		});
 	}
 
